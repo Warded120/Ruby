@@ -1,13 +1,11 @@
-# apartment_price.rb
-
 def calc_apartment_cost(area, material, floor, district, style, category)
   # --- 1. Собівартість ---
-  material_index = case material.downcase
-                   when "панельний", "бетон" then 300
-                   when "цегляний", "цегла" then 500
-                   when "композит", "композитний" then 800
+  material_index = case material
+                   when 1 then 300  # Панельний / Бетон
+                   when 2 then 500  # Цегляний / Цегла
+                   when 3 then 800  # Композит
                    else
-                     raise "Невідомий матеріал!"
+                     raise "Невірний вибір матеріалу!"
                    end
 
   cost_price = area * material_index
@@ -19,40 +17,39 @@ def calc_apartment_cost(area, material, floor, district, style, category)
                  1.4
                end
 
-  district_coef = case district.downcase
-                  when "центр" then 1.7
-                  when "спальний" then 1.4
-                  when "приміський" then 1.15
+  district_coef = case district
+                  when 1 then 1.7  # Центр
+                  when 2 then 1.4  # Спальний
+                  when 3 then 1.15 # Приміський
                   else
-                    raise "Невідомий район!"
+                    raise "Невірний вибір району!"
                   end
 
   rm = cost_price * floor_coef * district_coef
 
   # --- 3. Вартість забудовника ---
-  arch_coef = case style.downcase
-              when "хайтех" then 2.0
-              when "ексклюзів" then 1.7
-              when "індивідуал" then 1.5
-              when "стандарт" then 1.05
+  arch_coef = case style
+              when 1 then 2.0   # Хайтех
+              when 2 then 1.7   # Ексклюзів
+              when 3 then 1.5   # Індивідуал
+              when 4 then 1.05  # Стандарт
               else
-                raise "Невідомий стиль!"
+                raise "Невірний вибір стилю!"
               end
 
   developer_price = rm * arch_coef
 
   # --- 4. Загальна вартість (з податком) ---
-  tax_coef = case category.downcase
-             when "елітна" then 1.75
-             when "бюджетна" then 1.5
-             when "пільгова" then 1.07
+  tax_coef = case category
+             when 1 then 1.75  # Елітна
+             when 2 then 1.5   # Бюджетна
+             when 3 then 1.07  # Пільгова
              else
-               raise "Невідома категорія!"
+               raise "Невірний вибір категорії!"
              end
 
   total_price = developer_price * tax_coef
 
-  # Повертаємо результати
   return {
     cost_price: cost_price.round(2),
     developer_price: developer_price.round(2),
@@ -60,12 +57,48 @@ def calc_apartment_cost(area, material, floor, district, style, category)
   }
 end
 
-# --- Демонстрація ---
+# --- Інтерактивне меню ---
 if __FILE__ == $0
-  # приклад з умови
-  result = calc_apartment_cost(85, "композит", 5, "центр", "стандарт", "бюджетна")
+  puts "Введіть площу квартири (в м²):"
+  area = gets.chomp.to_f
 
-  puts "Собівартість (СВ): #{result[:cost_price]}"
-  puts "Вартість забудовника (ПЗ): #{result[:developer_price]}"
-  puts "Загальна вартість (ЗВ): #{result[:total_price]}"
+  puts "\nОберіть матеріал:"
+  puts "1 - Панельний / Бетон"
+  puts "2 - Цегляний / Цегла"
+  puts "3 - Композит"
+  material = gets.chomp.to_i
+
+  puts "\nВведіть поверх (число):"
+  floor = gets.chomp.to_i
+
+  puts "\nОберіть район:"
+  puts "1 - Центр"
+  puts "2 - Спальний"
+  puts "3 - Приміський"
+  district = gets.chomp.to_i
+
+  puts "\nОберіть архітектурний стиль:"
+  puts "1 - Хайтех"
+  puts "2 - Ексклюзів"
+  puts "3 - Індивідуал"
+  puts "4 - Стандарт"
+  style = gets.chomp.to_i
+
+  puts "\nОберіть категорію:"
+  puts "1 - Елітна"
+  puts "2 - Бюджетна"
+  puts "3 - Пільгова"
+  category = gets.chomp.to_i
+
+  # Обчислення
+  begin
+    result = calc_apartment_cost(area, material, floor, district, style, category)
+
+    puts "\n--- Результати розрахунку ---"
+    puts "Собівартість (СВ): #{result[:cost_price]}"
+    puts "Вартість забудовника (ПЗ): #{result[:developer_price]}"
+    puts "Загальна вартість (ЗВ): #{result[:total_price]}"
+  rescue => e
+    puts "Помилка: #{e.message}"
+  end
 end

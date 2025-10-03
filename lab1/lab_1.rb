@@ -1,3 +1,4 @@
+
 def book_price(pages, tirage)
 
   puts "Розрахунок для книги #{pages} ст. та тиражу #{tirage}"
@@ -42,4 +43,4 @@ def book_price(pages, tirage)
 end
 
 # Приклад виклику
-book_price(300, 1000)
+book_price(50, 1000)
